@@ -54,7 +54,7 @@ ReqPlan/
 
 ---
 
-## Conceitos de OOP aplicados
+## Conceitos de POP aplicados
 
 O projeto usa duas classes com encapsulamento:
 
