@@ -1,74 +1,69 @@
-# ReqPlan – Sistema de Gerenciamento de Requisitos
+# ReqPlan
 
-Aplicação web para cadastro, organização e acompanhamento de requisitos de software.
+Sistema web simples para gerenciar requisitos de projetos de software.
 
-## Tecnologias
+## Tecnologias usadas
 
-- **Python 3** — linguagem principal
-- **Flask** — microframework web
-- **Bootstrap 5** — estilização via CDN
-- **HTML + Jinja2** — templates
+- Python 3 + Flask
+- Bootstrap 5 (via CDN)
+- Jinja2 (templates HTML)
 
-> Os dados são armazenados em memória (dicionário Python). Ao reiniciar o servidor, os dados são apagados — sem banco de dados necessário.
+Os dados ficam em memória enquanto o servidor está rodando. Ao encerrar o servidor, os dados são perdidos.
 
-## Como executar
+## Como rodar
 
-### 1. Instale a dependência
+Instale o Flask:
 ```
 pip install flask
 ```
 
-### 2. Execute a aplicação
+Execute:
 ```
 python app.py
 ```
 
-### 3. Acesse no navegador
-```
-http://localhost:5000
-```
+Acesse em `http://localhost:5000`
 
 ---
 
-## Funcionalidades
+## O que dá pra fazer
 
-| Funcionalidade | Descrição |
-|---|---|
-| Cadastro de projetos | Nome, descrição e data de início |
-| Cadastro de requisitos | Título, descrição, tipo, prioridade |
-| Tipos | Funcional / Não Funcional |
-| Prioridades | Alta / Média / Baixa |
-| Status | Aberto / Em desenvolvimento / Concluído |
-| Filtros | Por tipo, prioridade e status |
-| Métricas | Total, funcionais, não funcionais, concluídos, % progresso |
-| Barra de progresso | Percentual de requisitos concluídos |
+- Criar, editar e excluir projetos
+- Adicionar requisitos a cada projeto (título, descrição, tipo, prioridade)
+- Alterar o status de um requisito (Aberto, Em desenvolvimento, Concluído)
+- Filtrar requisitos por tipo, prioridade ou status
+- Ver métricas do projeto: total de requisitos, quantos são funcionais, quantos foram concluídos, percentual de progresso
 
 ---
 
-## Estrutura do Projeto
+## Estrutura dos arquivos
 
 ```
 ReqPlan/
-├── app.py                   # Modelos OOP + rotas Flask
-├── requirements.txt         # Dependências Python
+├── app.py                    # classes e rotas
+├── requirements.txt
 ├── templates/
-│   ├── base.html            # Layout base (navbar + Bootstrap)
-│   ├── index.html           # Lista de projetos
-│   ├── projeto_form.html    # Formulário criar/editar projeto
-│   ├── projeto_detalhe.html # Detalhes, métricas e lista de requisitos
-│   └── requisito_form.html  # Formulário criar/editar requisito
+│   ├── base.html             # layout base
+│   ├── index.html            # lista de projetos
+│   ├── projeto_form.html     # formulário de projeto
+│   ├── projeto_detalhe.html  # detalhes e requisitos
+│   └── requisito_form.html   # formulário de requisito
 └── static/
-    └── style.css            # Estilos personalizados
+    └── style.css
 ```
 
 ---
 
 ## Conceitos de OOP aplicados
 
-- **Encapsulamento** — atributos privados com prefixo `__` (name mangling do Python)
-- **Getters e setters** — métodos `get_x()` / `set_x()` para acesso controlado
-- **Classe `Requisito`** — encapsula id, título, descrição, tipo, prioridade e status
-- **Classe `Projeto`** — encapsula lista de requisitos e expõe métodos de manipulação
-- **`adicionar_requisito(r)`** — adiciona um requisito ao projeto
-- **`remover_requisito(req_id)`** — remove um requisito pelo id
-- **`calcular_percentual_concluido()`** — calcula o percentual de requisitos com status "Concluido"
+O projeto usa duas classes com encapsulamento:
+
+**Classe `Requisito`**
+- Atributos privados: `__id`, `__titulo`, `__descricao`, `__tipo`, `__prioridade`, `__status`
+- Métodos de acesso: `get_titulo()`, `set_titulo()`, etc.
+
+**Classe `Projeto`**
+- Atributos privados: `__id`, `__nome`, `__descricao`, `__data_inicio`, `__requisitos`
+- `adicionar_requisito(r)` — adiciona um requisito à lista
+- `remover_requisito(req_id)` — remove pelo id
+- `calcular_percentual_concluido()` — retorna o percentual de requisitos com status "Concluido"
