@@ -1,0 +1,23 @@
+body {
+    background-color: #f4f6fb;
+}
+
+.navbar-brand {
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.table th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-size: 0.78rem;
+    padding: 0.35em 0.65em;
+}

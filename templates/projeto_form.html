@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">{{ "Editar Projeto" if projeto else "Novo Projeto" }}</h3>
+
+<form method="POST" class="card card-body shadow-sm" style="max-width:540px">
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Nome *</label>
+    <input type="text" class="form-control" name="nome"
+           value="{{ projeto.get_nome() if projeto else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Descrição</label>
+    <textarea class="form-control" name="descricao" rows="3">{{ projeto.get_descricao() if projeto else '' }}</textarea>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Data de Início</label>
+    <input type="date" class="form-control" name="data_inicio"
+           value="{{ projeto.get_data_inicio() if projeto else '' }}">
+  </div>
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    {% if projeto %}
+      <a href="{{ url_for('projeto_detalhe', id=projeto.get_id()) }}" class="btn btn-secondary">Cancelar</a>
+    {% else %}
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+    {% endif %}
+  </div>
+</form>
+
+{% endblock %}

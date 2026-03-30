@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="mb-3">{{ "Editar Requisito" if requisito else "Novo Requisito" }}</h3>
+
+<form method="POST" class="card card-body shadow-sm" style="max-width:540px">
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Título *</label>
+    <input type="text" class="form-control" name="titulo"
+           value="{{ requisito.get_titulo() if requisito else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Descrição</label>
+    <textarea class="form-control" name="descricao" rows="3">{{ requisito.get_descricao() if requisito else '' }}</textarea>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Tipo *</label>
+    <select class="form-select" name="tipo" required>
+      <option value="">Selecione...</option>
+      <option value="Funcional"
+        {{ 'selected' if requisito and requisito.get_tipo() == 'Funcional' }}>Funcional</option>
+      <option value="Nao Funcional"
+        {{ 'selected' if requisito and requisito.get_tipo() == 'Nao Funcional' }}>Não Funcional</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Prioridade *</label>
+    <select class="form-select" name="prioridade" required>
+      <option value="">Selecione...</option>
+      <option value="Alta"
+        {{ 'selected' if requisito and requisito.get_prioridade() == 'Alta' }}>Alta</option>
+      <option value="Media"
+        {{ 'selected' if requisito and requisito.get_prioridade() == 'Media' }}>Média</option>
+      <option value="Baixa"
+        {{ 'selected' if requisito and requisito.get_prioridade() == 'Baixa' }}>Baixa</option>
+    </select>
+  </div>
+  {% if requisito %}
+  <div class="mb-3">
+    <label class="form-label fw-semibold">Status</label>
+    <select class="form-select" name="status">
+      <option value="Aberto"
+        {{ 'selected' if requisito.get_status() == 'Aberto' }}>Aberto</option>
+      <option value="Em desenvolvimento"
+        {{ 'selected' if requisito.get_status() == 'Em desenvolvimento' }}>Em desenvolvimento</option>
+      <option value="Concluido"
+        {{ 'selected' if requisito.get_status() == 'Concluido' }}>Concluído</option>
+    </select>
+  </div>
+  {% endif %}
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('projeto_detalhe', id=projeto.get_id()) }}" class="btn btn-secondary">Cancelar</a>
+  </div>
+</form>
+
+{% endblock %}

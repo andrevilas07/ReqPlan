@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+  <div>
+    <a href="{{ url_for('index') }}" class="text-decoration-none text-muted">Projetos</a>
+    <h2 class="mt-1 mb-0">{{ projeto.get_nome() }}</h2>
+    {% if projeto.get_descricao() %}
+      <p class="text-muted mt-1">{{ projeto.get_descricao() }}</p>
+    {% endif %}
+    {% if projeto.get_data_inicio() %}
+      <small class="text-muted">Início: {{ projeto.get_data_inicio() }}</small>
+    {% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('projeto_form', id=projeto.get_id()) }}"
+       class="btn btn-sm btn-outline-secondary">Editar Projeto</a>
+    <a href="{{ url_for('requisito_form', proj_id=projeto.get_id()) }}"
+       class="btn btn-sm btn-primary">+ Novo Requisito</a>
+  </div>
+</div>
+
+<div class="row row-cols-2 row-cols-md-5 g-3 mb-3">
+  <div class="col">
+    <div class="card text-center border-0 bg-light">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold">{{ total }}</div>
+        <div class="small text-muted">Total</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center border-0" style="background-color:#e7f0ff">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold text-primary">{{ funcionais }}</div>
+        <div class="small text-muted">Funcionais</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center border-0 bg-light">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold">{{ nao_funcionais }}</div>
+        <div class="small text-muted">Não Funcionais</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center border-0" style="background-color:#e6f9ed">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold text-success">{{ concluidos }}</div>
+        <div class="small text-muted">Concluídos</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card text-center border-0" style="background-color:#fff8e1">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold text-warning">{{ pct }}%</div>
+        <div class="small text-muted">Progresso</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <div class="progress" style="height:10px;border-radius:5px">
+    <div class="progress-bar bg-success" style="width:{{ pct }}%"></div>
+  </div>
+</div>
+
+<form method="GET" action="{{ url_for('projeto_detalhe', id=projeto.get_id()) }}"
+      class="card card-body mb-4 border-0 bg-light">
+  <div class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold mb-1">Tipo</label>
+      <select class="form-select form-select-sm" name="tipo">
+        <option value="">Todos</option>
+        <option value="Funcional"
+          {{ 'selected' if filtros.tipo == 'Funcional' }}>Funcional</option>
+        <option value="Nao Funcional"
+          {{ 'selected' if filtros.tipo == 'Nao Funcional' }}>Não Funcional</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold mb-1">Prioridade</label>
+      <select class="form-select form-select-sm" name="prioridade">
+        <option value="">Todas</option>
+        <option value="Alta"
+          {{ 'selected' if filtros.prioridade == 'Alta' }}>Alta</option>
+        <option value="Media"
+          {{ 'selected' if filtros.prioridade == 'Media' }}>Média</option>
+        <option value="Baixa"
+          {{ 'selected' if filtros.prioridade == 'Baixa' }}>Baixa</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small fw-semibold mb-1">Status</label>
+      <select class="form-select form-select-sm" name="status">
+        <option value="">Todos</option>
+        <option value="Aberto"
+          {{ 'selected' if filtros.status == 'Aberto' }}>Aberto</option>
+        <option value="Em desenvolvimento"
+          {{ 'selected' if filtros.status == 'Em desenvolvimento' }}>Em desenvolvimento</option>
+        <option value="Concluido"
+          {{ 'selected' if filtros.status == 'Concluido' }}>Concluído</option>
+      </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-sm btn-primary flex-fill">Filtrar</button>
+      <a href="{{ url_for('projeto_detalhe', id=projeto.get_id()) }}"
+         class="btn btn-sm btn-outline-secondary flex-fill">Limpar</a>
+    </div>
+  </div>
+</form>
+
+{% set tem_filtro = filtros.tipo or filtros.prioridade or filtros.status %}
+<h5 class="mb-3">
+  Requisitos
+  {% if tem_filtro %}
+    <span class="text-muted small fw-normal">— exibindo {{ requisitos|length }} de {{ total }}</span>
+  {% endif %}
+</h5>
+
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Título / Descrição</th>
+        <th>Tipo</th>
+        <th>Prioridade</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if not requisitos %}
+      <tr>
+        <td colspan="5" class="text-center text-muted py-3">Nenhum requisito encontrado.</td>
+      </tr>
+      {% else %}
+      {% for r in requisitos %}
+      <tr>
+        <td>
+          <strong>{{ r.get_titulo() }}</strong>
+          {% if r.get_descricao() %}
+            <br><small class="text-muted">{{ r.get_descricao() }}</small>
+          {% endif %}
+        </td>
+        <td>
+          {% if r.get_tipo() == 'Funcional' %}
+            <span class="badge bg-primary">Funcional</span>
+          {% else %}
+            <span class="badge bg-dark">Não Funcional</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if r.get_prioridade() == 'Alta' %}
+            <span class="badge bg-danger">Alta</span>
+          {% elif r.get_prioridade() == 'Media' %}
+            <span class="badge bg-warning text-dark">Média</span>
+          {% else %}
+            <span class="badge bg-success">Baixa</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if r.get_status() == 'Concluido' %}
+            <span class="badge bg-success">Concluído</span>
+          {% elif r.get_status() == 'Em desenvolvimento' %}
+            <span class="badge bg-info text-dark">Em desenvolvimento</span>
+          {% else %}
+            <span class="badge bg-secondary">Aberto</span>
+          {% endif %}
+        </td>
+        <td class="text-nowrap">
+          <a href="{{ url_for('requisito_form', proj_id=projeto.get_id(), req_id=r.get_id()) }}"
+             class="btn btn-sm btn-outline-secondary">Editar</a>
+          <form method="POST"
+                action="{{ url_for('requisito_excluir', proj_id=projeto.get_id(), req_id=r.get_id()) }}"
+                class="d-inline"
+                onsubmit="return confirm('Excluir este requisito?')">
+            <button class="btn btn-sm btn-outline-danger ms-1">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
